@@ -35,8 +35,9 @@ function Register() {
             navigate('/auth/login')
         }
         else {
-            toast.error(result.payload.message || "Registration failed!");
-            console.error("Registration failed:", result.payload);
+            const errorMessage = result.payload || "Registration failed!";
+            toast.error(errorMessage);
+            console.error("Registration failed:", errorMessage);
 
         }
     }
