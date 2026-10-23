@@ -1,0 +1,3 @@
+import React from "react";
+function UserFilters({ search, setSearch, role, setRole }) { return <div className="mb-5 flex flex-col gap-3 sm:flex-row"><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search by name or email" className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-purple-500" /><select value={role} onChange={(event) => setRole(event.target.value)} className="rounded-xl border border-slate-200 px-4 py-3 outline-none"><option value="all">All roles</option><option value="customer">Customers</option><option value="admin">Admins</option><option value="superadmin">Super admins</option></select></div>; }
+export default UserFilters;

@@ -1,0 +1,11 @@
+import React, { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllProduct } from "../../redux/features/productSlice";
+import { fetchCategories } from "../../redux/features/categorySlice";
+import ProductGrid from "../../components/product/ProductGrid";
+import ProductFilters from "../../components/product/ProductFilters";
+import Loader from "../../components/common/Loader";
+import EmptyState from "../../components/common/EmptyState";
+function Products() { const dispatch = useDispatch(); const [searchParams] = useSearchParams(); const { products, isLoading } = useSelector((state) => state.product); const { categories } = useSelector((state) => state.category); const [search, setSearch] = useState(() => searchParams.get("search") || ""); const [category, setCategory] = useState(""); const [priceRange, setPriceRange] = useState(""); useEffect(() => { dispatch(fetchAllProduct()); dispatch(fetchCategories()); }, [dispatch]); useEffect(() => { setSearch(searchParams.get("search") || ""); }, [searchParams]); const filtered = useMemo(() => products.filter((product) => { const price = Number(product.price) || 0; const matchesPrice = !priceRange || (priceRange === "under-1000" && price < 1000) || (priceRange === "1000-10000" && price >= 1000 && price <= 10000) || (priceRange === "10000-50000" && price > 10000 && price <= 50000) || (priceRange === "over-50000" && price > 50000); return product.name.toLowerCase().includes(search.toLowerCase()) && (!category || product.category?._id === category) && matchesPrice; }), [products, search, category, priceRange]); return <main className="mx-auto max-w-6xl px-4 py-8 sm:px-8"><h1 className="text-3xl font-bold text-slate-900">Products</h1><p className="mt-2 text-sm text-slate-500">Browse the ShopX catalog.</p><div className="mt-6 flex flex-col gap-3 sm:flex-row"><ProductFilters categories={categories} categoryValue={category} onCategoryChange={setCategory} priceValue={priceRange} onPriceChange={setPriceRange} /></div><div className="mt-8">{isLoading ? <Loader /> : filtered.length ? <ProductGrid products={filtered} /> : <EmptyState title="No products found" message="Try another search, category, or price range." />}</div></main>; }
+export default Products;

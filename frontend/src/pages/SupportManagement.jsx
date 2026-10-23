@@ -1,0 +1,12 @@
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchTickets, updateTicket } from "../redux/features/supportSlice";
+
+function SupportManagement() {
+  const dispatch = useDispatch();
+  const { tickets, isLoading, error } = useSelector((state) => state.support);
+  const [responses, setResponses] = useState({});
+  useEffect(() => { dispatch(fetchTickets()); }, [dispatch]);
+  return <main className="min-h-[calc(100vh-72px)] bg-slate-50 px-4 py-8 sm:px-8"><div className="mx-auto max-w-6xl"><h1 className="text-3xl font-black text-slate-900">Support requests</h1><p className="mt-2 text-sm text-slate-500">Review customer issues and send resolutions.</p>{error && <p className="mt-4 text-sm text-rose-600">{error}</p>}<div className="mt-6 space-y-4">{!isLoading && !tickets.length && <div className="rounded-2xl bg-white p-10 text-center text-sm text-slate-500">No support requests yet.</div>}{tickets.map((ticket) => <article key={ticket._id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><div className="flex flex-wrap justify-between gap-3"><div><h2 className="font-bold text-slate-900">{ticket.subject}</h2><p className="mt-1 text-xs text-slate-500">{ticket.customerId?.name} · {ticket.customerId?.email} · Priority: {ticket.priority}</p></div><select value={ticket.status} onChange={(event) => dispatch(updateTicket({ id: ticket._id, status: event.target.value, response: responses[ticket._id] || ticket.response || "Status updated by support team." }))} className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold"><option value="open">Open</option><option value="in_progress">In progress</option><option value="resolved">Resolved</option><option value="closed">Closed</option></select></div><p className="mt-4 text-sm text-slate-600">{ticket.description}</p><div className="mt-4 flex gap-2"><input value={responses[ticket._id] ?? ticket.response ?? ""} onChange={(event) => setResponses({ ...responses, [ticket._id]: event.target.value })} placeholder="Write a response..." className="min-w-0 flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-indigo-500" /><button type="button" onClick={() => dispatch(updateTicket({ id: ticket._id, status: ticket.status, response: responses[ticket._id] }))} className="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold text-white hover:bg-indigo-700">Send response</button></div></article>)}</div></div></main>;
+}
+export default SupportManagement;

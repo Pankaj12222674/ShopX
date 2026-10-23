@@ -1,0 +1,7 @@
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+const api = () => ({ headers: { Authorization: "Bearer " + localStorage.getItem("token") } });
+export const fetchStats = createAsyncThunk("stats/fetch", async (_, { rejectWithValue }) => { try { return (await axios.get("/api/superadmin/stats", api())).data.stats; } catch (error) { return rejectWithValue(error.response?.data?.message || "Unable to load statistics"); } });
+export const fetchOverview = createAsyncThunk("stats/overview", async (_, { rejectWithValue }) => { try { return (await axios.get("/api/superadmin/overview", api())).data; } catch (error) { return rejectWithValue(error.response?.data?.message || "Unable to load overview"); } });
+const statsSlice = createSlice({ name: "stats", initialState: { data: {}, products: [], orders: [], isLoading: false, error: null }, reducers: {}, extraReducers: (builder) => { [fetchStats, fetchOverview].forEach((thunk) => builder.addCase(thunk.pending, (state) => { state.isLoading = true; }).addCase(thunk.rejected, (state, action) => { state.isLoading = false; state.error = action.payload; })); builder.addCase(fetchStats.fulfilled, (state, action) => { state.isLoading = false; state.data = action.payload; }).addCase(fetchOverview.fulfilled, (state, action) => { state.isLoading = false; state.products = action.payload.products; state.orders = action.payload.orders; }); } });
+export default statsSlice.reducer;

@@ -1,0 +1,3 @@
+import React from "react";
+function OrderSummary({ items, total }) { return <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><h2 className="font-bold text-slate-900">Your order</h2><div className="mt-4 space-y-2 text-sm text-slate-600">{items.map((item) => <div key={item.product?._id} className="flex justify-between"><span>{item.product?.name} × {item.quantity}</span><span>₹{(item.product?.price * item.quantity).toLocaleString("en-IN")}</span></div>)}</div><div className="mt-5 flex justify-between border-t pt-4 font-bold"><span>Total</span><span>₹{Number(total).toLocaleString("en-IN")}</span></div></div>; }
+export default OrderSummary;

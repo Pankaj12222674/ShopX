@@ -1,0 +1,7 @@
+import React from "react";
+import { Trash2 } from "lucide-react";
+import QuantitySelector from "./QuantitySelector";
+import { useDispatch } from "react-redux";
+import { addToCart, removeFromCart } from "../../redux/features/cartSlice";
+function CartItem({ item }) { const dispatch = useDispatch(); const product = item.product; const changeQuantity = (quantity) => { const difference = quantity - item.quantity; if (difference > 0) dispatch(addToCart({ productId: product._id, quantity: difference })); if (difference < 0) dispatch(removeFromCart({ productId: product._id, quantity: Math.abs(difference) })); }; return <div className="flex flex-wrap items-center gap-4 border-b border-slate-100 py-4"><div className="h-20 w-20 rounded-xl bg-slate-100">{product?.image && <img src={product.image} alt={product.name} className="h-full w-full rounded-xl object-cover" />}</div><div className="min-w-40 flex-1"><h3 className="font-semibold text-slate-800">{product?.name}</h3><p className="mt-1 text-sm text-slate-500">₹{Number(product?.price || 0).toLocaleString("en-IN")}</p></div><QuantitySelector value={item.quantity} max={product?.stock} onChange={changeQuantity} /><p className="w-24 text-right font-semibold">₹{(Number(product?.price || 0) * item.quantity).toLocaleString("en-IN")}</p><button type="button" onClick={() => dispatch(removeFromCart({ productId: product._id, quantity: item.quantity }))} className="p-2 text-red-500"><Trash2 size={18} /></button></div>; }
+export default CartItem;
