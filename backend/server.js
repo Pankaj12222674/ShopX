@@ -23,6 +23,7 @@ if (missingEnvironment.length > 0) {
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+const port = process.env.PORT || 4000
 
 mongoose.connect(process.env.MONGO_URI, { dbName: process.env.MONGO_DB || "web_dev" }).then(() => {
     console.log("Database connected")
@@ -33,7 +34,9 @@ mongoose.connect(process.env.MONGO_URI, { dbName: process.env.MONGO_DB || "web_d
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL
+      ? [process.env.FRONTEND_URL, "http://localhost:5173"]
+      : true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -55,6 +58,6 @@ app.use('/api/support', supportRouter)
 
 
 
-app.listen(4000, () => {
-    console.log(`Server is running on port ${4000}`)
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`)
 })
