@@ -40,6 +40,10 @@ app.use(
   })
 );
 
+app.get("/", (req, res) => {
+  res.send("ShopX API is running successfully!");
+});
+
 app.use('/api/auth', authRouter)
 app.use('/api/category',categoryRouter)
 app.use('/api/product',productRouter)
@@ -48,6 +52,8 @@ app.use('/api/order',orderRouter)
 app.use('/api/superadmin', superadminRouter)
 app.use('/api/notification', notificationRouter)
 app.use('/api/support', supportRouter)
+
+
 
 app.listen(4000, () => {
     console.log(`Server is running on port ${4000}`)
